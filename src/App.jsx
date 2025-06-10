@@ -4,7 +4,7 @@ import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import { registerUser } from "./services/api";
 
-const xumm = new XummPkce(import.meta.env.VITE_XUMM_API_KEY);
+const xumm = new XummPkce('6a0a1b23-c534-4f38-9dfc-a907d27a7cd3');
 
 export default function App() {
   const [userAddress, setUserAddress] = useState(null);
