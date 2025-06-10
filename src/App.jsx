@@ -14,10 +14,13 @@ export default function App() {
   useEffect(() => {
     const init = async () => {
       try {
+        console.log("init")
         await xumm.authorize(); // shows QR / opens Xaman popup
+        console.log("init finished");
         const address = await xumm.user.account;
+        console.log("address: ",address);
 
-        await registerUser(address);
+        // await registerUser(address);
         setUserAddress(address);
       } catch (e) {
         console.error("Auth failed", e);
