@@ -11,14 +11,18 @@ export default function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Wait for xumm SDK to be ready (automatically picks up injected context)
     xumm.on("ready", async () => {
       try {
         const state = await xumm.state();
+
         if (state?.me?.account) {
           setAccount(state.me.account);
+        } else {
+          console.warn("No account info returned from xumm.state()");
         }
       } catch (err) {
-        console.error("Failed to load session:", err);
+        console.error("Error getting state:", err);
       } finally {
         setLoading(false);
       }
