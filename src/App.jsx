@@ -7,41 +7,36 @@ import { registerUser } from "./services/api";
 const xumm = new XummPkce('6a0a1b23-c534-4f38-9dfc-a907d27a7cd3');
 
 export default function App() {
-  const [userAddress, setUserAddress] = useState(null);
+  const [account, setAccount] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Initial auth (auto)
   useEffect(() => {
     const init = async () => {
-      try {
-        console.log("init")
-        await xumm.authorize(); // shows QR / opens Xaman popup
-        console.log("init finished");
-        const address = await xumm.user.account;
-        console.log("address: ",address);
+      // Automatically restores session if possible
+      await xumm.authorize();
 
-        // await registerUser(address);
-        setUserAddress(address);
-      } catch (e) {
-        console.error("Auth failed", e);
-      } finally {
-        setLoading(false);
+      const userAccount = await xumm.user.account;
+      if (userAccount) {
+        setAccount(userAccount);
       }
+
+      setLoading(false);
     };
 
     init();
   }, []);
 
-  if (loading)
-    return <div className="text-center mt-20">🔄 Connecting to Xaman...</div>;
+  if (loading) {
+    return <div className="text-center mt-20">Loading your wallet info...</div>;
+  }
+
+  if (!account) {
+    return <div className="text-center mt-20">No account found. Please open this in Xaman Wallet.</div>;
+  }
 
   return (
-    <div className="p-6 max-w-md mx-auto text-center">
-      {userAddress ? (
-        <Dashboard address={userAddress} />
-      ) : (
-        <Login onLogin={async () => {}} />
-      )}
+    <div className="p-6 max-w-md mx-auto">
+      <h1 className="text-xl font-bold mb-4">Your xApp 🧩 {account} </h1>
     </div>
   );
 }
