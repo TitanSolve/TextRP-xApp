@@ -11,21 +11,18 @@ export default function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const init = async () => {
-      // Automatically restores session if possible
-      console.log("1111111");
-      await xumm.authorize();
-      console.log("2222222");
-      const userAccount = await xumm.user.account;
-      console.log("userAccount");
-      if (userAccount) {
-        setAccount(userAccount);
+    xumm.on("ready", async () => {
+      try {
+        const state = await xumm.state();
+        if (state?.me?.account) {
+          setAccount(state.me.account);
+        }
+      } catch (err) {
+        console.error("Failed to load session:", err);
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
-    };
-
-    init();
+    });
   }, []);
 
   if (loading) {
