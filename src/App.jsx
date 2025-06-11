@@ -4,7 +4,7 @@ import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import { registerUser } from "./services/api";
 
-const xumm = new XummPkce('6a0a1b23-c534-4f38-9dfc-a907d27a7cd3');
+const xumm = new XummPkce("6a0a1b23-c534-4f38-9dfc-a907d27a7cd3");
 
 export default function App() {
   const [account, setAccount] = useState(null);
@@ -13,7 +13,10 @@ export default function App() {
   useEffect(() => {
     const init = async () => {
       // Automatically restores session if possible
-      await xumm.authorize();
+      await xumm.authorize().catch((e) => console.log("e", e));
+      xumm.on("error", (error) => {
+        console.log("error", error);
+      });
 
       const userAccount = await xumm.user.account;
       if (userAccount) {
@@ -31,7 +34,11 @@ export default function App() {
   }
 
   if (!account) {
-    return <div className="text-center mt-20">No account found. Please open this in Xaman Wallet.</div>;
+    return (
+      <div className="text-center mt-20">
+        No account found. Please open this in Xaman Wallet.
+      </div>
+    );
   }
 
   return (
